@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking History — HD Motors</title>
+    <meta name="description" content="Track your vehicle service bookings, payment status, and service progress at HD Motors. All your booking history in one place.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #080808;
+            --bg2: #111111;
+            --card: #161616;
+            --card2: #1a1a1a;
+            --border: #252525;
+            --border2: #2e2e2e;
+            --accent: #e63946;
+            --accent2: #ff6b35;
+            --green: #10b981;
+            --amber: #f59e0b;
+            --blue: #3b82f6;
+            --purple: #7c3aed;
+            --text: #f0f0f0;
+            --muted: #8a8a9a;
+            --input-bg: #1e1e1e;
+            --glow: rgba(230, 57, 70, 0.25);
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        h1, h2, h3, h4, .brand {
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ── HEADER ── */
+        header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            padding: 0 6%;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(8, 8, 8, 0.92);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .brand {
+            font-size: 1.6rem;
+            font-weight: 900;
+            text-decoration: none;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        nav { display: flex; gap: 32px; align-items: center; }
+        nav a {
+            color: var(--muted);
+            text-decoration: none;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            transition: color 0.3s;
+            position: relative;
+        }
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px; left: 0;
+            width: 0; height: 2px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+        nav a:hover, nav a.active { color: var(--text); }
+        nav a:hover::after, nav a.active::after { width: 100%; }
+
+        .nav-cta {
+            padding: 9px 22px;
+            background: var(--accent) !important;
+            color: #fff !important;
+            border-radius: 3px;
+            transition: all 0.3s !important;
+        }
+        .nav-cta::after { display: none !important; }
+        .nav-cta:hover { background: #c92a36 !important; box-shadow: 0 0 20px var(--glow); }
+
+        .menu-toggle {
+            display: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--accent);
+            background: none;
+            border: none;
+        }
+
+        /* ── MAIN CONTENT ── */
+        .history-main {
+            flex: 1;
+            padding: 110px 6% 80px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* ── HERO HEADER ── */
+        .page-hero {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .page-hero::after {
+            content: '';
+            position: absolute;
+            bottom: -24px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+        }
+
+        .page-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 4px;
+            color: var(--accent);
+            margin-bottom: 18px;
+            text-transform: uppercase;
+        }
+        .page-eyebrow::before, .page-eyebrow::after {
+            content: '';
+            display: block;
+            width: 28px;
+            height: 2px;
+            background: var(--accent);
+            opacity: 0.5;
+        }
+
+        .page-hero h1 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 900;
+            line-height: 1.08;
+            margin-bottom: 14px;
+        }
+
+        .accent-word {
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-hero > p {
+            color: var(--muted);
+            font-size: 0.95rem;
+            max-width: 500px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        /* ── LOOKUP FORM ── */
+        .lookup-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 36px 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 16px 60px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lookup-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent));
+        }
+
+        .lookup-inner {
+            display: flex;
+            gap: 16px;
+            align-items: flex-end;
+        }
+
+        .lookup-field {
+            flex: 1;
+        }
+
+        .lookup-field label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.78rem;
+            color: var(--muted);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .lookup-field input {
+            width: 100%;
+            padding: 14px 18px;
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            border-radius: 5px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .lookup-field input::placeholder { color: #3a3a4a; }
+        .lookup-field input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(230,57,70,0.1);
+        }
+
+        .btn-lookup {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 32px;
+            background: linear-gradient(135deg, var(--accent), #c92a36);
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 6px 24px var(--glow);
+            white-space: nowrap;
+            flex-shrink: 0;
+            height: 48px;
+        }
+        .btn-lookup:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 36px rgba(230,57,70,0.45);
+        }
+        .btn-lookup:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .lookup-hint {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--muted);
+            font-size: 0.75rem;
+            margin-top: 14px;
+        }
+        .lookup-hint span { font-size: 1rem; }
+
+        .booking-notice {
+            display: none;
+            margin-bottom: 18px;
+            padding: 14px 16px;
+            border-radius: 8px;
+            border: 1px solid rgba(16,185,129,0.35);
+            background: linear-gradient(140deg, rgba(16,185,129,0.12), rgba(6,95,70,0.08));
+            color: #d5fff0;
+            font-size: 0.84rem;
+            line-height: 1.6;
+        }
+        .booking-notice.visible { display: block; }
+        .booking-notice strong {
+            color: #8ef5ce;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+        }
+
+        /* ── STATS SUMMARY ROW ── */
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 14px;
+            margin-bottom: 32px;
+            opacity: 0;
+            transform: translateY(16px);
+            transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .summary-stats.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .summary-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.3s, transform 0.3s;
+        }
+        .summary-card:hover { transform: translateY(-3px); }
+
+        .summary-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 3px; height: 100%;
+        }
+        .summary-card.red::before    { background: var(--accent); }
+        .summary-card.green::before  { background: var(--green); }
+        .summary-card.amber::before  { background: var(--amber); }
+        .summary-card.blue::before   { background: var(--blue); }
+        .summary-card.purple::before { background: var(--purple); }
+
+        .summary-label {
+            font-size: 0.65rem;
+            color: var(--muted);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .summary-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--text);
+            line-height: 1;
+        }
+
+        /* ── BOOKING CARDS ── */
+        .bookings-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .booking-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.35s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: cardSlideIn 0.5s ease forwards;
+        }
+        .booking-card:nth-child(1) { animation-delay: 0.05s; }
+        .booking-card:nth-child(2) { animation-delay: 0.12s; }
+        .booking-card:nth-child(3) { animation-delay: 0.19s; }
+        .booking-card:nth-child(4) { animation-delay: 0.26s; }
+        .booking-card:nth-child(5) { animation-delay: 0.33s; }
+        .booking-card:nth-child(6) { animation-delay: 0.40s; }
+
+        @keyframes cardSlideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .booking-card:hover {
+            border-color: rgba(230,57,70,0.3);
+            box-shadow: 0 12px 48px rgba(0,0,0,0.4);
+        }
+
+        /* Card Header */
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            background: rgba(255,255,255,0.015);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .card-id {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.65rem;
+            color: var(--accent);
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+
+        .card-date {
+            font-size: 0.78rem;
+            color: var(--muted);
+        }
+
+        .card-header-right {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 14px;
+            border-radius: 4px;
+            font-size: 0.62rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            white-space: nowrap;
+            font-family: 'Orbitron', sans-serif;
+        }
+        .status-badge.pending   { background: rgba(245,158,11,0.1); color: var(--amber); border: 1px solid rgba(245,158,11,0.25); }
+        .status-badge.confirmed { background: rgba(16,185,129,0.1); color: var(--green); border: 1px solid rgba(16,185,129,0.25); }
+        .status-badge.cancelled { background: rgba(230,57,70,0.1);  color: var(--accent); border: 1px solid rgba(230,57,70,0.25); }
+        .status-badge.completed { background: rgba(59,130,246,0.1); color: var(--blue);  border: 1px solid rgba(59,130,246,0.25); }
+
+        .payment-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 14px;
+            border-radius: 4px;
+            font-size: 0.62rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            white-space: nowrap;
+            font-family: 'Orbitron', sans-serif;
+        }
+        .payment-badge.paid   { background: rgba(16,185,129,0.1); color: var(--green); border: 1px solid rgba(16,185,129,0.25); }
+        .payment-badge.unpaid { background: rgba(245,158,11,0.1); color: var(--amber); border: 1px solid rgba(245,158,11,0.25); }
+
+        /* Card Body */
+        .card-body {
+            padding: 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0;
+        }
+
+        .card-section {
+            padding: 0 24px;
+            border-right: 1px solid var(--border);
+        }
+        .card-section:first-child { padding-left: 0; }
+        .card-section:last-child { border-right: none; padding-right: 0; }
+
+        .card-section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.58rem;
+            letter-spacing: 3px;
+            color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card-section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 7px 0;
+        }
+        .detail-row:not(:last-child) {
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+        }
+
+        .detail-label {
+            font-size: 0.78rem;
+            color: var(--muted);
+            font-weight: 500;
+        }
+
+        .detail-value {
+            font-size: 0.82rem;
+            color: var(--text);
+            font-weight: 600;
+            text-align: right;
+        }
+
+        /* Progress tracker in card */
+        .progress-tracker {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            margin-top: 10px;
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            position: relative;
+        }
+
+        .progress-dot {
+            width: 26px; height: 26px;
+            border-radius: 50%;
+            background: var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.55rem;
+            color: var(--muted);
+            z-index: 1;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        .progress-dot.active {
+            background: rgba(230,57,70,0.15);
+            border-color: var(--accent);
+            color: var(--accent);
+            box-shadow: 0 0 12px rgba(230,57,70,0.3);
+        }
+        .progress-dot.done {
+            background: rgba(16,185,129,0.15);
+            border-color: var(--green);
+            color: var(--green);
+        }
+        .progress-dot.cancelled-dot {
+            background: rgba(230,57,70,0.15);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .progress-label {
+            font-size: 0.6rem;
+            color: var(--muted);
+            margin-top: 8px;
+            text-align: center;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+        .progress-label.active { color: var(--accent); font-weight: 700; }
+        .progress-label.done { color: var(--green); font-weight: 600; }
+
+        .progress-line {
+            position: absolute;
+            top: 13px;
+            left: 50%;
+            width: 100%;
+            height: 2px;
+            background: var(--border);
+            z-index: 0;
+        }
+        .progress-line.filled {
+            background: var(--green);
+        }
+        .progress-step:last-child .progress-line { display: none; }
+
+        /* ── EMPTY / LOADING STATES ── */
+        .state-panel {
+            text-align: center;
+            padding: 80px 30px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+        }
+
+        .state-icon {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .state-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text);
+        }
+
+        .state-text {
+            color: var(--muted);
+            font-size: 0.88rem;
+            max-width: 380px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* Loading spinner */
+        .spinner-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .spinner {
+            width: 44px; height: 44px;
+            border: 3px solid rgba(230,57,70,0.15);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .loading-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.78rem;
+            color: var(--muted);
+            letter-spacing: 2px;
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            background: #000;
+            padding: 40px 6% 26px;
+            border-top: 1px solid var(--border);
+        }
+        .footer-bottom {
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.78rem;
+        }
+        .owner-link {
+            color: var(--muted);
+            cursor: pointer;
+            border-bottom: 1px dashed rgba(138,138,154,0.4);
+            transition: color 0.2s;
+            font-size: 0.75rem;
+        }
+        .owner-link:hover { color: var(--accent); }
+
+        /* ── LOGIN MODAL ── */
+        #login-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 4000;
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.3s;
+            backdrop-filter: blur(6px);
+        }
+        #login-modal.visible { visibility: visible; opacity: 1; }
+
+        .login-box {
+            background: var(--card);
+            padding: 40px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 420px;
+            border: 1px solid rgba(230,57,70,0.3);
+            position: relative;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+        }
+        .login-box h2 {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+        .login-box > p {
+            color: var(--muted);
+            font-size: 0.85rem;
+            margin-bottom: 28px;
+        }
+        .login-box label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.78rem;
+            color: var(--muted);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .login-box input {
+            width: 100%;
+            padding: 13px 16px;
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            border-radius: 5px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.92rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            margin-bottom: 18px;
+        }
+        .login-box input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(230,57,70,0.1);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 16px; right: 18px;
+            color: var(--muted);
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: color 0.2s;
+            background: none; border: none;
+        }
+        .close-btn:hover { color: var(--accent); }
+
+        .btn-form {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--accent), #c92a36);
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 6px 24px var(--glow);
+        }
+        .btn-form:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 36px rgba(230,57,70,0.45);
+        }
+
+        .form-group { margin-bottom: 4px; }
+
+        /* ── FADE UP ── */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 900px) {
+            .card-body {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            .card-section {
+                padding: 0;
+                border-right: none;
+                padding-bottom: 18px;
+                border-bottom: 1px solid var(--border);
+            }
+            .card-section:last-child { border-bottom: none; padding-bottom: 0; }
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle { display: block; }
+            nav {
+                display: none;
+                position: absolute;
+                top: 70px; left: 0; right: 0;
+                background: rgba(8,8,8,0.98);
+                flex-direction: column;
+                padding: 20px 5%;
+                gap: 0;
+                border-bottom: 1px solid var(--border);
+                backdrop-filter: blur(20px);
+            }
+            nav.active { display: flex; }
+            nav a { padding: 14px 0; border-bottom: 1px solid var(--border); }
+            nav a:last-child { border-bottom: none; }
+
+            .lookup-inner {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .btn-lookup { width: 100%; }
+
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .summary-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .summary-stats {
+                grid-template-columns: 1fr;
+            }
+            .history-main {
+                padding-left: 4%;
+                padding-right: 4%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <a href="index.html" class="brand">HD Motors</a>
+        <button class="menu-toggle" id="menu-toggle">☰</button>
+        <nav id="nav-menu">
+            <a href="index.html">Home</a>
+            <a href="services.html">Services</a>
+            <a href="projects.html">Projects</a>
+            <a href="history.html" class="active">My Bookings</a>
+            <a href="booking.html" class="nav-cta">Book Now</a>
+        </nav>
+    </header>
+
+    <main class="history-main">
+
+        <!-- Page Hero -->
+        <div class="page-hero fade-up">
+            <div class="page-eyebrow">My Bookings</div>
+            <h1>Booking <span class="accent-word">History</span></h1>
+            <p>Track your bookings, payment status, and service progress — all in one place.</p>
+        </div>
+
+        <!-- Lookup Form -->
+        <div class="lookup-card fade-up" id="lookup-card">
+            <div class="lookup-inner">
+                <div class="lookup-field">
+                    <label for="lookup-email">Email Address</label>
+                    <input type="email" id="lookup-email" placeholder="Enter the email you used to book" autocomplete="email">
+                </div>
+                <button class="btn-lookup" id="btn-lookup" onclick="lookupBookings()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                    Track
+                </button>
+            </div>
+            <div class="lookup-hint">
+                <span>🔒</span>
+                <span>Enter the email address you used during booking to view your records.</span>
+            </div>
+        </div>
+        <div id="booking-notice" class="booking-notice fade-up"></div>
+
+        <!-- Summary Stats (hidden until lookup) -->
+        <div class="summary-stats" id="summary-stats">
+            <div class="summary-card red">
+                <div class="summary-label">Total Bookings</div>
+                <div class="summary-value" id="sum-total">0</div>
+            </div>
+            <div class="summary-card amber">
+                <div class="summary-label">Pending</div>
+                <div class="summary-value" id="sum-pending">0</div>
+            </div>
+            <div class="summary-card green">
+                <div class="summary-label">Confirmed</div>
+                <div class="summary-value" id="sum-confirmed">0</div>
+            </div>
+            <div class="summary-card blue">
+                <div class="summary-label">Completed</div>
+                <div class="summary-value" id="sum-completed">0</div>
+            </div>
+        </div>
+
+        <!-- Results Container -->
+        <div id="results-container">
+            <!-- Initial / idle state -->
+            <div class="state-panel fade-up" id="idle-state">
+                <div class="state-icon">🔍</div>
+                <div class="state-title">Look Up Your Bookings</div>
+                <div class="state-text">Enter your email address above and hit Track to view all your booking history, payment records, and service statuses.</div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-bottom">
+            <p>Managed by Hasan Shaikh &mdash; &copy; 2024 HD Motors. All Rights Reserved.</p>
+            <p style="margin-top:8px;"><span class="owner-link" onclick="openLoginModal()">Owner Login</span></p>
+        </div>
+    </footer>
+
+    <!-- LOGIN MODAL -->
+    <div id="login-modal">
+        <div class="login-box">
+            <button class="close-btn" onclick="closeLoginModal()">✕</button>
+            <h2>Owner Area</h2>
+            <p>Restricted access. Authorised personnel only.</p>
+            <form id="ownerLoginForm" onsubmit="handleOwnerLogin(event)">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="adminEmail">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="adminPassword">
+                </div>
+                <button type="submit" class="btn-form">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+        import { getFirestore, collection, query, where, getDocs, orderBy }
+            from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword }
+            from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCmnchwnfxmGXIKqo9lzmxMVPJS5O6KolU",
+            authDomain: "hd-motord.firebaseapp.com",
+            projectId: "hd-motord",
+            storageBucket: "hd-motord.firebasestorage.app",
+            messagingSenderId: "652034677678",
+            appId: "1:652034677678:web:3f9145a47891eda1b3463f"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // ── Lookup Bookings ──
+        window.lookupBookings = async function () {
+            const email = document.getElementById('lookup-email').value.trim().toLowerCase();
+            if (!email) {
+                shakeInput();
+                return;
+            }
+
+            const btn = document.getElementById('btn-lookup');
+            const container = document.getElementById('results-container');
+
+            // Show loading
+            btn.disabled = true;
+            btn.innerHTML = `<div class="spinner" style="width:20px;height:20px;border-width:2px;margin:0;"></div> Searching...`;
+            container.innerHTML = `
+                <div class="state-panel">
+                    <div class="spinner-wrap">
+                        <div class="spinner"></div>
+                        <div class="loading-text">Searching bookings...</div>
+                    </div>
+                </div>`;
+
+            try {
+                // Query bookings by email
+                let snap;
+                try {
+                    const q = query(
+                        collection(db, "bookings"),
+                        where("email", "==", email)
+                    );
+                    snap = await getDocs(q);
+                } catch (indexErr) {
+                    // Fallback: get all and filter client-side
+                    const allSnap = await getDocs(collection(db, "bookings"));
+                    const filtered = [];
+                    allSnap.forEach(d => {
+                        const data = d.data();
+                        if ((data.email || '').toLowerCase() === email) {
+                            filtered.push({ id: d.id, ...data });
+                        }
+                    });
+                    renderResults(filtered);
+                    resetButton(btn);
+                    return;
+                }
+
+                const bookings = [];
+                snap.forEach(d => bookings.push({ id: d.id, ...d.data() }));
+
+                // Sort by timestamp (newest first)
+                bookings.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+                renderResults(bookings);
+            } catch (err) {
+                container.innerHTML = `
+                    <div class="state-panel">
+                        <div class="state-icon">⚠️</div>
+                        <div class="state-title">Something Went Wrong</div>
+                        <div class="state-text">We couldn't reach the server. Please check your internet connection and try again.</div>
+                    </div>`;
+                console.error(err);
+            }
+
+            resetButton(btn);
+        };
+
+        function resetButton(btn) {
+            btn.disabled = false;
+            btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg> Track`;
+        }
+
+        function shakeInput() {
+            const input = document.getElementById('lookup-email');
+            input.style.borderColor = 'var(--accent)';
+            input.style.animation = 'shake 0.4s ease';
+            input.focus();
+            setTimeout(() => {
+                input.style.animation = '';
+                input.style.borderColor = '';
+            }, 500);
+        }
+
+        // Add shake animation
+        const shakeStyle = document.createElement('style');
+        shakeStyle.textContent = `@keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-8px)} 40%{transform:translateX(8px)} 60%{transform:translateX(-5px)} 80%{transform:translateX(5px)} }`;
+        document.head.appendChild(shakeStyle);
+
+        // ── Render Results ──
+        function renderResults(bookings) {
+            const container = document.getElementById('results-container');
+            const statsEl = document.getElementById('summary-stats');
+            const noticeEl = document.getElementById('booking-notice');
+
+            if (!bookings.length) {
+                statsEl.classList.remove('visible');
+                noticeEl.classList.remove('visible');
+                container.innerHTML = `
+                    <div class="state-panel">
+                        <div class="state-icon">📭</div>
+                        <div class="state-title">No Bookings Found</div>
+                        <div class="state-text">We couldn't find any bookings for this email address. Make sure you're using the same email you booked with.</div>
+                    </div>`;
+                return;
+            }
+
+            // Update summary stats
+            const count = s => bookings.filter(b => (b.status || 'Pending').toLowerCase() === s).length;
+            document.getElementById('sum-total').textContent = bookings.length;
+            document.getElementById('sum-pending').textContent = count('pending');
+            document.getElementById('sum-confirmed').textContent = count('confirmed');
+            document.getElementById('sum-completed').textContent = count('completed');
+            statsEl.classList.add('visible');
+            const hasBooked = bookings.some(b => (b.status || '').toLowerCase() === 'confirmed');
+            if (hasBooked) {
+                noticeEl.innerHTML = `<strong>Appointment Booked</strong><br>Your booking has been approved by the owner. Please arrive 10 minutes early on your scheduled time.`;
+                noticeEl.classList.add('visible');
+            } else {
+                noticeEl.innerHTML = `<strong>Pending Approval</strong><br>Your booking request has been received and is awaiting owner approval.`;
+                noticeEl.classList.add('visible');
+            }
+
+            // Render booking cards
+            container.innerHTML = `<div class="bookings-list">${bookings.map(b => renderCard(b)).join('')}</div>`;
+        }
+
+        function renderCard(b) {
+            const status = b.status || 'Pending';
+            const statusLower = status.toLowerCase();
+            const statusLabel = statusLower === 'confirmed' ? 'Appointment Booked' : status;
+            const payment = b.paymentStatus || 'Not Paid';
+            const isPaid = payment.toLowerCase().includes('paid') && !payment.toLowerCase().includes('not');
+
+            // Format date nicely
+            const bookDate = b.timestamp ? new Date(b.timestamp).toLocaleDateString('en-US', {
+                year: 'numeric', month: 'short', day: 'numeric'
+            }) : '—';
+
+            const bookTime = b.timestamp ? new Date(b.timestamp).toLocaleTimeString('en-US', {
+                hour: '2-digit', minute: '2-digit'
+            }) : '';
+
+            // Progress tracker
+            const steps = ['Booked', 'Confirmed', 'In Progress', 'Completed'];
+            let activeStep = 0;
+            if (statusLower === 'confirmed') activeStep = 1;
+            else if (statusLower === 'in progress') activeStep = 2;
+            else if (statusLower === 'completed') activeStep = 3;
+            const isCancelled = statusLower === 'cancelled';
+
+            const progressHtml = `
+                <div class="progress-tracker">
+                    ${steps.map((step, i) => {
+                        let dotClass = '';
+                        let labelClass = '';
+                        if (isCancelled) {
+                            dotClass = i === 0 ? 'cancelled-dot' : '';
+                            labelClass = '';
+                        } else if (i < activeStep) {
+                            dotClass = 'done';
+                            labelClass = 'done';
+                        } else if (i === activeStep) {
+                            dotClass = 'active';
+                            labelClass = 'active';
+                        }
+                        const lineClass = !isCancelled && i < activeStep ? 'filled' : '';
+                        const icon = isCancelled && i === 0 ? '✕' : (i < activeStep ? '✓' : (i === activeStep && !isCancelled ? '●' : (i + 1)));
+                        return `
+                            <div class="progress-step">
+                                <div class="progress-dot ${dotClass}">${icon}</div>
+                                <div class="progress-label ${labelClass}">${step}</div>
+                                <div class="progress-line ${lineClass}"></div>
+                            </div>`;
+                    }).join('')}
+                </div>
+                ${isCancelled ? '<div style="text-align:center;margin-top:10px;color:var(--accent);font-size:0.72rem;font-weight:600;font-family:Orbitron,sans-serif;letter-spacing:1.5px;">BOOKING CANCELLED</div>' : ''}
+            `;
+
+            return `
+                <div class="booking-card">
+                    <div class="card-header">
+                        <div class="card-header-left">
+                            <span class="card-id">#${b.id.slice(0, 8).toUpperCase()}</span>
+                            <span class="card-date">Booked on ${bookDate} ${bookTime ? 'at ' + bookTime : ''}</span>
+                        </div>
+                        <div class="card-header-right">
+                            <span class="payment-badge ${isPaid ? 'paid' : 'unpaid'}">
+                                ${isPaid ? '✓' : '○'} ${payment}
+                            </span>
+                            <span class="status-badge ${statusLower}">
+                                ${statusLabel}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-section">
+                            <div class="card-section-title">Vehicle Details</div>
+                            <div class="detail-row">
+                                <span class="detail-label">Vehicle</span>
+                                <span class="detail-value">${b.vehicle || '—'}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Service</span>
+                                <span class="detail-value" style="color:var(--accent)">${b.service || '—'}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Customer</span>
+                                <span class="detail-value">${b.name || '—'}</span>
+                            </div>
+                        </div>
+                        <div class="card-section">
+                            <div class="card-section-title">Appointment</div>
+                            <div class="detail-row">
+                                <span class="detail-label">Date</span>
+                                <span class="detail-value">${b.appointmentDate || '—'}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Time</span>
+                                <span class="detail-value" style="color:var(--accent)">${b.appointmentTime || '—'}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Phone</span>
+                                <span class="detail-value">${b.phone || '—'}</span>
+                            </div>
+                        </div>
+                        <div class="card-section">
+                            <div class="card-section-title">Service Progress</div>
+                            ${progressHtml}
+                        </div>
+                    </div>
+                </div>`;
+        }
+
+        // ── Enter key triggers lookup
+        document.getElementById('lookup-email').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                window.lookupBookings();
+            }
+        });
+
+        // ── Owner Auth ──
+        window.openLoginModal = () => document.getElementById('login-modal').classList.add('visible');
+        window.closeLoginModal = () => document.getElementById('login-modal').classList.remove('visible');
+
+        window.handleOwnerLogin = async (e) => {
+            e.preventDefault();
+            try {
+                await signInWithEmailAndPassword(auth, document.getElementById('adminEmail').value, document.getElementById('adminPassword').value);
+                window.location.href = 'admin.html';
+            } catch { alert("Access Denied. Invalid credentials."); }
+        };
+
+        // ── Nav toggle ──
+        document.getElementById('menu-toggle').addEventListener('click', () => {
+            document.getElementById('nav-menu').classList.toggle('active');
+        });
+
+        // ── Fade up ──
+        const obs = new IntersectionObserver((entries) => {
+            entries.forEach((e, i) => {
+                if (e.isIntersecting) {
+                    setTimeout(() => e.target.classList.add('visible'), i * 100);
+                    obs.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.08 });
+        document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+
+        // ── Check URL params for auto-lookup ──
+        const urlParams = new URLSearchParams(window.location.search);
+        const emailParam = urlParams.get('email');
+        if (emailParam) {
+            document.getElementById('lookup-email').value = emailParam;
+            window.lookupBookings();
+        }
+    </script>
+
+</body>
+</html>
